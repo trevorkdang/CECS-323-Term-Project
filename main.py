@@ -54,7 +54,7 @@ def add_department(db):
     office: int
     while True:
         try:
-            # will ask for all the appropriate fields
+            #inputs for the following will be saved
             departmentName = input("Department Name(10 - 50 characters)--> ")
             abbreviation = input("Abbreviation(Max 6 characters)--> ")
             chairName = input("Chair Name(Max 80 characters)--> ")
@@ -97,7 +97,7 @@ def add_course(db):
                 "units": units
             }
             collection.insert_one(course)
-            # We must update the courses property in the departments collection
+            # updates the courses in the departments collection
             course = collection.find_one(course)
             departments = db["departments"]
             departments.update_one({"name": department["name"]}, {"$push": {"courses": course["course_name"]}})
@@ -114,8 +114,8 @@ def add_section(db):
     collection = db["sections"]
     while True:
         try:
-            # get course we want to add a section to
-            # course will contain the dept abv, course name and number
+            # selects the course we will add a section to
+            # then input the fields needed for said section
             course = select_course(db)
             sectionNumber = int(input("Section Number--> "))
             year = int(input("Year--> "))
@@ -139,7 +139,7 @@ def add_section(db):
                 "instructor": instructor,
             }
             collection.insert_one(section)
-            # we also have to add a reference to the section_id in course's sections array
+            # adds a reference to the section_id in course's sections array
             section = collection.find_one(section)
             courses = db["courses"]
             courses.update_one({"department_abbreviation": course["department_abbreviation"], "course_number": course["course_number"]},
@@ -161,7 +161,7 @@ def add_major(db):
             department = select_department(db)
             majorName = input("Major Name--> ")
             majorDescription = input("Major Description--> ")
-            # major needs to be an object since we will insert an object into department's major array
+            # here the major is an object, this will allow us to add into department major array
             major = {"major_name": majorName, "major_description": majorDescription}
             query = {"name": department["name"]}
             update = {"$push": {"majors": major}}
@@ -180,7 +180,6 @@ def add_student(db):
 
     while True:
         try:
-            # will ask for all the appropriate fields
             firstName = input("First Name--> ")
             lastName = input("Last Name--> ")
             email = input("email--> ")
@@ -202,23 +201,21 @@ def add_section_student(db):
     # the following will add a section to student/used for vice-versa as well (add_student_section)
     while True:
         try:
-            # we need to make sure student exists
+            # checks for student
             student = select_student(db)
-            # also make sure that section exists    
+            # checks for section
             section = select_section(db)
-            # we must ask for PassFail or LetterGrade
+            # adds a new input for passfail or lettergrade
             passOrLetter = input("PassFail or LetterGrade--> ")
             if passOrLetter == "PassFail":
                 applicationDate = input("Enter declaration date in format 'YYYY-MM-DD'--> ")
-                # date wizardry
+                # datetime object
                 datetime_obj = datetime.combine(datetime.strptime(applicationDate, "%Y-%m-%d"), datetime.min.time())
                 type = {"type_name": passOrLetter, "application_date": datetime_obj}
             if passOrLetter == "LetterGrade":
                 letterGrade = input("Please input a min letter grade required--> ")
                 type = {"type_name": passOrLetter, "min_satisfactory": letterGrade}
-            # Once we have both student and the section we want to add we need 
-            # to update that student's sections array since it is an array of objects
-            # we must use a dictionary to make sure the info is inserted properly
+            # Uses a dictionary to make sure the info is inserted properly
             sectionToAdd = {"section_id": ObjectId(section["_id"]),
                                 "department_abbreviation": section["department_abbreviation"],
                                  "course_name": section["course_name"], "course_number": section["course_number"], "section_number": section["section_number"],
@@ -257,9 +254,7 @@ def add_student_section(db):
             if passOrLetter == "LetterGrade":
                 letterGrade = input("Please input a min letter grade required--> ")
                 type = {"type_name": passOrLetter, "min_satisfactory": letterGrade}
-            # Once we have both student and the section we want to add we need 
-            # to update that student's sections array since it is an array of objects
-            # we must use a dictionary to make sure the info is inserted properly
+
             sectionToAdd = {"section_id": ObjectId(section["_id"]),
                                 "department_abbreviation": section["department_abbreviation"],
                                  "course_name": section["course_name"], "course_number": section["course_number"], "section_number": section["section_number"],
@@ -285,13 +280,12 @@ def add_major_student(db):
     collection = db["students"]
     while True:
         try:
-            # we have to check to see if the student exists first
+            # checks for valid student
             student = select_student(db)
-            # The following will ask for the user to input major name and declaration 
-            # we have to make sure that major exists
+            # checks for major
             majorName = select_major(db)
             declarationDate = input("Enter declaration date in format 'YYYY-MM-DD'--> ")
-            # date wizardry
+            # datetime
             datetime_obj = datetime.combine(datetime.strptime(declarationDate, "%Y-%m-%d"), datetime.min.time())
             major = {"major_name": majorName, "declaration_date": datetime_obj}
             query = {"first_name": student["first_name"], "last_name": student["last_name"]}
@@ -306,7 +300,7 @@ def add_major_student(db):
             print("Please try again-->")
 
 
-# all the select() definitons, similar to the SQLAlchemy assignments
+# all the select() definitions, similar to the SQLAlchemy assignments
 def select_student(db, show: bool = True):
     if show == True:
         list_student(db)
@@ -315,9 +309,7 @@ def select_student(db, show: bool = True):
     found: bool = False
     lastName: str = ''
     firstName: str = ''
-    # we only need two pieces of info to find a particular student, 
-    # not what we would typically find in the real word but, 
-    # Professor Brown's mandatory uniquess contraint is only on First/Last name
+
     while not found:
         lastName = input("Student's last name--> ")
         firstName = input("Student's first name--> ")
@@ -372,7 +364,7 @@ def select_section(db, show: bool = True):
     collection = db["sections"]
     found: bool = False
     while not found:
-        # to find a particular section we need 5 pieces of information
+        # to select section, need valid inputs
         departmentAbbreviation = input("Department Abbreviation--> ")
         try:
             courseNumber = int(input("Course Number--> "))
@@ -400,16 +392,15 @@ def select_major(db):
     collection = db["departments"]
     found: bool = False
     while not found:
-        # we need to find a major from the department's majors array
+        # searches for a major from the department's majors array
         department = select_department(db)
-        # once department has been found we need to search its array
         majorName = input("Major Name--> ")
         name_count = collection.count_documents({"name": department["name"], "majors.major_name": majorName})
         found = name_count == 1
         if not found:
             print("Major not found. Try again.")
     found_major = collection.find_one({"name": department["name"], "majors.major_name": majorName})
-    # will return the major name if it exists
+    # returns major name
     return majorName
 
 
@@ -420,11 +411,11 @@ def select_major(db):
 def delete_department(db):
     department = select_department(db)
     departments = db["departments"]
-    # we must delete all sections that are under the umbrella of this department
+    # we must delete all sections that are under this department
     sections = db["sections"]
     for course in department["courses"]:
         sections.delete_many({"course_name": course})
-    # we must delete all courses that fall under that department's umbrella
+    # we must delete all courses that fall under the specific department
     courses = db["courses"]
     courses.delete_many({"department_abbreviation": department["abbreviation"]})
     # now actually delete the department
@@ -435,13 +426,11 @@ def delete_department(db):
 def delete_course(db):
     course = select_course(db)
     courses = db["courses"]
-    # we must remember to delete all sections that course offers
+    # cascade deletes all the sections under the course
     sections = db["sections"]
     sections.delete_many({"course_number": course["course_number"]})
-    # Also delete any reference in the departments collection to the course
     departments = db["departments"]
     departments.update_one({"abbreviation": course["department_abbreviation"]}, {"$pull": {"courses": course["course_name"]}})
-    # now we can go ahead and delete the course
     deleted = courses.delete_one({"_id": course["_id"]})
     print(f"We just deleted: {deleted.deleted_count} courses. ")
 
@@ -449,8 +438,6 @@ def delete_course(db):
 def delete_section(db):
     section = select_section(db)
     sections = db["sections"]
-    # Before we delete a section, we must remmeber to delete any of those instances from
-    # the student collection's student sections property
     students = db["students"]
     students.update_many({}, {"$pull":{"student_sections": 
                                        {"department_abbreviation": section["department_abbreviation"],
@@ -482,8 +469,7 @@ def delete_major(db):
 def delete_student(db):
     student = select_student(db)
     students = db["students"]
-    # Before we delete a student, we must remember to remove any references to that student
-    # in the students property of the sections collection
+    # should remove any references to that student in the students property of the sections collection
     sections = db["sections"]
     sections.update_many({"students": ObjectId(student["_id"])},
                          {"$pull": {"students": ObjectId(student["_id"])}})
@@ -499,7 +485,6 @@ def delete_section_student(db):
     #checks that a section can be deleted from that student
     if "student_sections" not in student.keys():
         print("That student does not have any section to remove. Try again.")
-        #returns back to the main menu
         return()
     section = select_section(db, False)
     if "students" not in section.keys():
@@ -515,12 +500,11 @@ def delete_section_student(db):
 
 
 def delete_student_section(db):
-    #same format as delete_section_student(db), only that section is selected first
+    #selects a section first to have a student be deleted
     section = select_section(db)
     #checks that a section can be deleted from that student
     if "students" not in section.keys():
         print("That section does not have any student to remove. Try again.")
-        #returns back to the main menu
         return()
     student = select_student(db, False)
     students = db["students"]
@@ -605,7 +589,6 @@ def list_student_sections(db):
 def list_student_major(db):
     students = db["students"].find({}).sort([("last_name", pymongo.ASCENDING),
                                              ("first_name", pymongo.ASCENDING)])
-    #print(f'{students["last_name"]}\'s Majors:')
     for student in students:
         if "major" in student:
             print(student["last_name"], student["first_name"], student["major"])
@@ -646,9 +629,9 @@ if __name__ == '__main__':
     departments.create_index("abbreviation", unique=True)
     departments.create_index("chair_name", unique=True)
     departments.create_index([("building", pymongo.ASCENDING), ("office", pymongo.ASCENDING)], unique=True)
-    # # just some initial data
+    # boilerplate data
     department = {
-        "name": "Computer Engineering Computer Science",
+        "name": "Computer Engineering and Computer Science",
         "abbreviation": "CECS",
         "chair_name": "Mehrdad Aliasgari",
         "building": "ECS",
@@ -703,19 +686,16 @@ if __name__ == '__main__':
     }
     db.students.insert_one(student)
 
-    # student is our students collection within this database.
-    # Merely referencing this collection will create it, although it won't show up in Atlas until
-    # we insert our first document into this collection.
     students = db["students"]
     student_count = students.count_documents({})
     print(f"Students in the collection so far: {student_count}")
 
-    # ************************** Set up the students collection
+    # Set up the students collection
     students_indexes = students.index_information()
     if 'students_last_and_first_names' in students_indexes.keys():
         print("first and last name index present.")
     else:
-    # Create a single UNIQUE index on BOTH the last name and the first name.
+    # Create a single UNIQUE index on BOTH the last name and the first name
         students.create_index([('last_name', pymongo.ASCENDING), ('first_name', pymongo.ASCENDING)],
                               unique=True,
                               name="students_last_and_first_names")
