@@ -595,12 +595,6 @@ def list_student_major(db):
          
 
 if __name__ == '__main__':
-    '''password: str = getpass.getpass('Mongo DB password -->')
-    username: str = input('Database username [CECS-323-Summer-user] -->') or \
-                    "CECS-323-Summer-user"
-    project: str = input('Mongo project name [CECS-323-Summer-2023] -->') or \
-                   "CECS-323-Summer-2023"
-    hash_name: str = input('7-character database hash [xm9bw6i] -->') or "xm9bw6i"'''
     password = "029014893"
     username = "trevordang01"
     project = "Cluster0"
