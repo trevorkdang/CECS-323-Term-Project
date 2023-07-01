@@ -11,7 +11,7 @@ DEPARTMENT_VALIDATOR = {
             "name": {
                 "bsonType": "string",
                 "description": "The name of the department",
-                "minLength": 10,
+                "minLength": 5,
                 "maxLength": 50
             },
             "abbreviation": {

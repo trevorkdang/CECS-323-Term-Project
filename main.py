@@ -55,7 +55,7 @@ def add_department(db):
     while True:
         try:
             #inputs for the following will be saved
-            departmentName = input("Department Name(10 - 50 characters)--> ")
+            departmentName = input("Department Name(5 - 50 characters)--> ")
             abbreviation = input("Abbreviation(Max 6 characters)--> ")
             chairName = input("Chair Name(Max 80 characters)--> ")
             building = input("Building--> ")
@@ -555,7 +555,8 @@ def list_majors(db):
     print('Current Majors:')
     for department in departments:
         if "majors" in department:
-            pprint(department["name","majors"])
+            pprint(department["name"])
+            pprint(department["majors"])
 
 def list_student(db):
     students = db["students"].find({}).sort([("last_name", pymongo.ASCENDING),
