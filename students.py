@@ -77,7 +77,7 @@ STUDENT_VALIDATOR = {
                                     "bsonType": "string",
                                     "enum": ["PassFail", "LetterGrade"]
                                 },
-                                "application_date": {
+                                "declaration_date": {
                                     "bsonType": "date"
                                 },
                                 "min_satisfactory": {

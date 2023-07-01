@@ -25,7 +25,7 @@ COURSE_VALIDATOR = {
             "units": {
                 "bsonType": "int",
                 "minimum": 1,
-                "maximum": 5
+                "maximum": 4
             },
             "sections": {
                 "bsonType": "array",

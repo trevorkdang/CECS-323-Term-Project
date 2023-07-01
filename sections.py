@@ -88,17 +88,31 @@ SECTION_VALIDATOR = {
                                     "bsonType": "string",
                                     "enum": ["PassFail", "LetterGrade"]
                                 },
-                                "application_date": {
+                                "declaration_date": {
                                     "bsonType": "date"
                                 },
                                 "min_satisfactory": {
                                     "bsonType": "string",
                                     "enum": ["A", "B", "C"]
                                 }
-                            }
+                            },
+                            "oneOf": [
+                                {
+                                    "properties": {
+                                        "type_name": { "enum": ["PassFail"] }
+                                    },
+                                    "required": ["type_name", "application_date"]
+                                },
+                                {
+                                    "properties": {
+                                        "type_name": { "enum": ["LetterGrade"] }
+                                    },
+                                    "required": ["type_name", "min_satisfactory"]
+                                }
+                            ]
+
                         }
                     }
-
 
                 }
             }

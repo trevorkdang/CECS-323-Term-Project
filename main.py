@@ -208,10 +208,10 @@ def add_section_student(db):
             # adds a new input for passfail or lettergrade
             passOrLetter = input("PassFail or LetterGrade--> ")
             if passOrLetter == "PassFail":
-                applicationDate = input("Enter declaration date in format 'YYYY-MM-DD'--> ")
+                declarationDate = input("Enter declaration date in format 'YYYY-MM-DD'--> ")
                 # datetime object
-                datetime_obj = datetime.combine(datetime.strptime(applicationDate, "%Y-%m-%d"), datetime.min.time())
-                type = {"type_name": passOrLetter, "application_date": datetime_obj}
+                datetime_obj = datetime.combine(datetime.strptime(declarationDate, "%Y-%m-%d"), datetime.min.time())
+                type = {"type_name": passOrLetter, "declaration_date": datetime_obj}
             if passOrLetter == "LetterGrade":
                 letterGrade = input("Please input a min letter grade required--> ")
                 type = {"type_name": passOrLetter, "min_satisfactory": letterGrade}
@@ -247,10 +247,10 @@ def add_student_section(db):
             # we must ask for PassFail or LetterGrade
             passOrLetter = input("PassFail or LetterGrade--> ")
             if passOrLetter == "PassFail":
-                applicationDate = input("Enter declaration date in format 'YYYY-MM-DD'--> ")
+                declarationDate = input("Enter declaration date in format 'YYYY-MM-DD'--> ")
                 # date wizardry
-                datetime_obj = datetime.combine(datetime.strptime(applicationDate, "%Y-%m-%d"), datetime.min.time())
-                type = {"type_name": passOrLetter, "application_date": datetime_obj}
+                datetime_obj = datetime.combine(datetime.strptime(declarationDate, "%Y-%m-%d"), datetime.min.time())
+                type = {"type_name": passOrLetter, "declaration_date": datetime_obj}
             if passOrLetter == "LetterGrade":
                 letterGrade = input("Please input a min letter grade required--> ")
                 type = {"type_name": passOrLetter, "min_satisfactory": letterGrade}
